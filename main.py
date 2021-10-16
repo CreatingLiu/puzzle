@@ -5,11 +5,23 @@ from PIL import Image, ImageTk
 import search
 from time import sleep
 
+class Dialog(Toplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.grab_set()
 
-class Waiting(Toplevel):
+    def moveToCenter(self):
+        self.update()
+        self.geometry(f"+{self.master.winfo_width() // 2 + self.master.winfo_x() - self.winfo_width() // 2}+{self.master.winfo_height() // 2 + self.master.winfo_y() - self.winfo_height() // 2}")
+        self.update()
+
+    def close(self):
+        self.destroy()
+
+class Waiting(Dialog):
     def __init__(self, master, maximum):
         super().__init__(master)
-        self.grab_set()
 
         self.title("waiting")
 
@@ -19,9 +31,7 @@ class Waiting(Toplevel):
         self.progressbar = Progressbar(self, maximum = maximum, length = 200)
         self.progressbar.pack()
 
-        self.update()
-        self.geometry(f"+{master.winfo_width() // 2 + master.winfo_x() - self.winfo_width() // 2}+{master.winfo_height() // 2 + master.winfo_y() - self.winfo_height() // 2}")
-        self.update()
+        self.moveToCenter()
 
     def set_value(self, value):
         self.progressbar['value'] = value
@@ -31,14 +41,9 @@ class Waiting(Toplevel):
         self.progressbar['value'] = self.progressbar['value'] + 1
         self.update()
 
-    def close(self):
-        self.destroy()
-
-class Searching(Toplevel):
+class Searching(Dialog):
     def __init__(self, master):
         super().__init__(master)
-        self.grab_set()
-
         self.step = 0
 
         self.title("searching")
@@ -49,23 +54,18 @@ class Searching(Toplevel):
         self.label2 = Label(self, text = "searching layer: " + str(self.step))
         self.label2.pack()
 
-        self.update()
-        self.geometry(f"+{master.winfo_width() // 2 + master.winfo_x() - self.winfo_width() // 2}+{master.winfo_height() // 2 + master.winfo_y() - self.winfo_height() // 2}")
-        self.update()
+        self.moveToCenter()
 
     def add(self):
         self.step += 1
         self.label2['text'] = "searching layer: " + str(self.step)
         self.update()
 
-    def close(self):
-        self.destroy()
 
-class NewPic(Toplevel):
+class NewPic(Dialog):
     def __init__(self, master, callableFunction):
         super().__init__(master)
         self.callable = callableFunction
-        self.grab_set()
 
         self.picPath = StringVar()
         self.width = StringVar()
@@ -112,6 +112,8 @@ class NewPic(Toplevel):
         self.line2.pack(fill = X, expand = 1, pady = 5)
         self.okButton.pack(pady = 5)
 
+        self.moveToCenter()
+
     def ok(self):
         self.destroy()
         self.callable({'path' : self.picPath.get(), "cut": (int(self.width.get()), int(self.height.get()))})
@@ -147,7 +149,7 @@ class APP(Tk):
 
         self.stepString = StringVar()
         self.stepString.set("13")
-        self.stepSpinBox = Spinbox(self.buttonFrame, from_ = 1, to_ = 10, textvariable = self.stepString)
+        self.stepSpinBox = Spinbox(self.buttonFrame, from_ = 1, to_ = 20, textvariable = self.stepString)
         self.stepSpinBox.pack(side = LEFT)
 
         self.randomPicButton = Button(self.buttonFrame,

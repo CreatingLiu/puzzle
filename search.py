@@ -16,17 +16,16 @@ def getAnswer(data):
     @data: 要获取解的棋盘
     @return: 对应的解
     """
-    if isinstance(data, tuple):
-        size1 = data[0]
-        size2 = data[1]
-    else:
-        size1 = len(data)
-        size2 = len(data[0])
-    answer = []
-    for i in range(size1):
-        answer.append(list(range(i * size1 + 1, i * size1 + 1 + size2)))
 
-    answer[size1 - 1][size2 - 1] = 0
+    if isinstance(data, tuple):
+        size = data
+    else:
+        size = (len(data), len(data[0]))
+    answer = []
+    for i in range(size[0]):
+        answer.append(list(range(i * size[1] + 1, i * size[1] + 1 + size[1])))
+
+    answer[size[0] - 1][size[1] - 1] = 0
     return answer
 
 def getSpacePos(data):
@@ -178,5 +177,5 @@ if __name__ == "__main__":
         [ 9, 10,  11,  12],
         [13, 14, 15, 0]
     ]
-
-    print(solve(getRandom(data, 10), 15))
+    print(getAnswer((3, 4)))
+    # print(solve(getRandom(data, 10), 15))
