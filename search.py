@@ -99,6 +99,8 @@ def search(root, target, maxLayer, callback):
             return None
         nextLayer = []
         for father in thisLayer: #遍历当前层，生成下一层
+            if father.data == target:
+                return father
             moved = move(father.data)
             for i in moved:
                 if i in arrived: #跳过已到达过的棋盘
@@ -108,8 +110,7 @@ def search(root, target, maxLayer, callback):
                 node.father = father
                 father.children.append(node)
                 nextLayer.append(node)
-                if i == target:
-                    return node
+                
         thisLayer = nextLayer
         layer += 1
         if callback:
