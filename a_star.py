@@ -1,5 +1,5 @@
-from time import time
 import heapq
+
 class NodeList1:
     def __init__(self):
         self.data = {}
@@ -139,7 +139,9 @@ class NodeList3:
     def __len__(self):
         return len(self.map)
 
+
 NodeList = NodeList3
+
 
 class Node:
     args = {
@@ -158,7 +160,7 @@ class Node:
             self.layer = self.father.layer + 1
         else:
             self.layer = 0
-        self.h_cost = self.args['h_cost'](self, self.args['target'])
+        self.h_cost = self.args['h_cost'](self)
         self.g_cost = self.args['g_cost'](self)
         self.f_cost = self.g_cost + self.h_cost
         self.hash = self.args['hash'](self)
@@ -195,7 +197,8 @@ def g_cost(node):
         return 0
 
 
-def h_cost(node, target):
+def h_cost(node):
+    target = node.args['target']
     h = 0
     for i in node.data:
         h += get_distance(get_pos(node.data, node.size, i), get_pos(target, node.size, i))
@@ -243,10 +246,10 @@ def swap(data, shape, a, b):
     swapped[a[0]][a[1]], swapped[b[0]][b[1]] = swapped[b[0]][b[1]], swapped[a[0]][a[1]]
     return table_to_list(swapped)
 
-def extend_node(node):
+def extend_node(node : Node):
     space_pos = get_space_pos(node.data, node.size)
     table = list_to_table(node.data, node.size)
-    size = node.size
+    shape = node.size
     children = []
     if space_pos[0] > 0: #上
         moved = swap(node.data, node.size, space_pos, (space_pos[0] - 1, space_pos[1]))
@@ -257,12 +260,12 @@ def extend_node(node):
         children.append(Node(moved, node))
 
 
-    if space_pos[0] < size[0] - 1: #下
+    if space_pos[0] < shape[0] - 1: #下
         moved = swap(node.data, node.size, space_pos, (space_pos[0] + 1, space_pos[1]))
         children.append(Node(moved, node))
 
 
-    if space_pos[1] < size[1] - 1: #右
+    if space_pos[1] < shape[1] - 1: #右
         moved = swap(node.data, node.size, space_pos, (space_pos[0], space_pos[1] + 1))
         children.append(Node(moved, node))
 
@@ -296,7 +299,8 @@ def A_star(start_node, target_node):
             else:
                 Open.append(extend)
 
-        print(n.layer, len(Close))
+        # print(n.layer, len(Close))
+   
         
 
 
@@ -390,6 +394,7 @@ def get_random1(size):
 
     
 if __name__ == "__main__":
+    from time import time
     # l = NodeList()
     # Node.init(**{
     #     "size": (3, 3),
@@ -403,8 +408,8 @@ if __name__ == "__main__":
     
     # l = sorted(l, key = lambda x : x.f_cost)
     # print(l)
-    size = (5, 5)
-    data = get_random(size, 30)
+    size = (3, 3)
+    data = get_random1(size)
     Node.init(**{
         "size": size,
         "g_cost": g_cost,
@@ -412,16 +417,20 @@ if __name__ == "__main__":
         "target": get_answer(size),
         "hash": node_hash
     })
+
+    target = A_star(Node(data), Node(get_answer(size)))
+    
+    print(target)
     # table = [
     #     [3, 1, 5],
     #     [0, 6, 8],
     #     [4, 2, 7]
     # ]
 
-    start = time()
-    solve = A_star(Node(data), Node(get_answer(size)))
-    print(len(get_solve_list(solve['solve node'])))
-    print(time() - start)
+    # start = time()
+    # solve = A_star(Node(data), Node(get_answer(size)))
+    # print(len(get_solve_list(solve['solve node'])))
+    # print(time() - start)
     # NodeList = NodeList2
     # start = time()
     # A_star(Node(data), Node(get_answer(size)))

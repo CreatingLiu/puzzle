@@ -196,7 +196,7 @@ class APP(Tk):
         way = search.search(self.data, self.shape)[1:]
         waiting.close()
         for data in way:
-            sleep(0.5)
+            sleep(0.3)
             self.data = data
             self.foreach_all_with_pos(lambda pos : self.draw(pos))
             self.update()
