@@ -20,4 +20,4 @@ def BFS(current,target):
                 if child in close:
                     continue
                 else:
-                    open.append(child)
+                    open.appendleft(child)

@@ -1,6 +1,3 @@
-from tkinter.constants import NO
-
-
 def hash(node):
     """
     获取节点的特征值，用进制方式计算
@@ -15,7 +12,10 @@ class Node:
     节点的结构
     """
     args = {
-        "shape": (3, 3)
+        "shape": (3, 3),
+        "hn": lambda x, y : 0,
+        "gn": lambda x: 0,
+        "targetNode": None
     }
     def __init__(self, data,father=None):
         self.data=data #数据
@@ -23,12 +23,36 @@ class Node:
         self.shape=self.args["shape"] #规模
         self.hash=hash(self) #特征值
         self.layer=self.father.layer + 1 if self.father else 0
-
+        self.hn=self.args["hn"](self, self.args["targetNode"]) #启发函数
+        self.gn=self.args["gn"](self) #路径代价
+        self.fn=self.hn + self.gn  #评价函数
     def __eq__(self, value):
         """
         重写相等运算，支持节点间比较
         """
         return self.hash == value.hash
+
+    def __lt__(self,value):
+        return self.fn < value.fn
+
+    def __gt__(self,value):
+        return self.fn > value.fn
+
+    def __le__(self,value):
+        return self.fn <= value.fn
+
+    def __ge__(self,value):
+        return self.fn >= value.fn
+
+    
+
+    def __str__(self):
+        s = ""
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                s += str(self.data[self.convertPos((i, j))]) + "\t"
+            s += "\r\n"
+        return s
 
     def convertPos(self, i):
         """
@@ -96,7 +120,7 @@ def getSolvePath(targetNode : Node):
     """
     path = []
     while targetNode:
-        path.append(listToTable(targetNode.data, targetNode.shape))
+        path.append(targetNode)
         targetNode = targetNode.father
     path.reverse() #倒置
     return path
