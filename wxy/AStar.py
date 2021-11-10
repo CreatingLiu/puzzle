@@ -46,6 +46,7 @@ def hn(node: Node,target: Node):
 
 
 def AStar(current,target):
+    Node.args["targetNode"] = target
     open=NodeList()
     close=NodeList()
     open.append(current)

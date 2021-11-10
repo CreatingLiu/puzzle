@@ -15,7 +15,7 @@ targetNode = Node(tableToList(target))
 
 Node.args["gn"] = gn
 Node.args["hn"] = hn
-Node.args["targetNode"] = targetNode
+
 
 result = AStar(currentNode, targetNode)
 path = getSolvePath(result["targetNode"])

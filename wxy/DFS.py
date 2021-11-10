@@ -1,7 +1,7 @@
 from collections import deque
 
 
-def BFS(current,target):
+def DFS(current,target):
     open=deque()
     close=deque()
     open.append(current)  #根节点放入open列表
